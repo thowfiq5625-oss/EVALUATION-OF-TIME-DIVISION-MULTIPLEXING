@@ -28,14 +28,88 @@ It takes the sample from each channel per revolution and rotates at the rate of 
 ### Kit Diagram
 <img width="480" height="324" alt="image" src="https://github.com/user-attachments/assets/b2f8f171-ceff-4481-add2-bc4ef1c42506" />
 
+## Program
+
+t = linspace(0, 1, 1000);
+
+fs = 1000; 
+
+freqs = [4, 8, 12, 16, 20, 24];
+
+signals = zeros(6, length(t));
+
+for i = 1:6
+    signals(i, :) = sin(2 * %pi * freqs(i) * t);
+end
+
+fdm_signal = zeros(1, length(t));
+
+for i = 1:6
+    fdm_signal = fdm_signal + signals(i, :);
+end
+
+order = 50;
+
+cutoff_freq = 8 / (fs/2); 
+
+h = ffilt("lp", order, cutoff_freq);
+
+demux_signals = zeros(6, length(t));
+
+for i = 1:6
+    mixed = fdm_signal .* sin(2 * %pi * freqs(i) * t);
+    demux_signals(i, :) = filter(h, 1, mixed);
+end
+
+scf(1);
+
+clf;
+
+for i = 1:6
+
+    subplot(3,2,i);
+    
+    plot(t, signals(i, :));
+    
+    title('Original Signal f=' + string(freqs(i)));
+end
+
+scf(2);
+
+clf;
+
+plot(t, fdm_signal);
+
+title('FDM Signal');
+
+scf(3);
+
+clf;
+
+for i = 1:6
+    
+    subplot(3,2,i);
+    
+    plot(t, demux_signals(i, :));
+    
+    title('Demultiplexed Signal f=' + string(freqs(i)));
+end
+
 ### Model Graph
 <img width="718" height="933" alt="image" src="https://github.com/user-attachments/assets/09c11b43-dc9c-4bf9-a04a-0728d0b0fea3" />
 
 ### Tabulation
 
-<img width="672" height="448" alt="image" src="https://github.com/user-attachments/assets/05600b28-ba54-4cd4-9ff4-f088865e85ae" />
+![WhatsApp Image 2025-11-19 at 18 30 35_cf1f755e](https://github.com/user-attachments/assets/98654439-4358-4552-b08c-02c2599af086)
+
+## Output
+
+![WhatsApp Image 2025-11-19 at 18 31 55_a972b129](https://github.com/user-attachments/assets/9260f12c-fdd5-483b-ade2-12af7a6a14e2)
+
+![WhatsApp Image 2025-11-19 at 18 32 17_f05874db](https://github.com/user-attachments/assets/8f5ec14b-918a-463c-8e07-009046ae221d)
 
 ### Result
 
+Thus , the Frequency division multiplexing is done experimentally and output is verified.
 
 
